@@ -1,11 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.global.css';
+import MainControls from './components/mainControls';
+import VideoPreview from './components/videoPreview';
 
-const Hello = () => {
+
+const Main = () => {
   return (
-    <div>
-     <h1>Get blasted eyyyyy</h1>
+    <div className="main">
+      <VideoPreview />
+      <MainControls />
     </div>
   );
 };
@@ -14,7 +18,7 @@ export default function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/" component={Hello} />
+        <Route path="/" component={Main} />
       </Switch>
     </Router>
   );
