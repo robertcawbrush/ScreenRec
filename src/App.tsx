@@ -4,15 +4,14 @@ import './App.global.css';
 import MainControls from './components/mainControls';
 import VideoPreview from './components/videoPreview';
 
-
-const Main = () => {
+const Main: React.VoidFunctionComponent = () => {
   return (
     <div className="main">
       <VideoPreview />
       <MainControls />
     </div>
   );
-};
+}
 
 export default function App() {
   return (
