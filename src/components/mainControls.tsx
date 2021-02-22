@@ -1,27 +1,37 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useRef, useState} from 'react';
+import Select from 'react-select';
 import { desktopCapturer } from 'electron';
+
+interface IOptions {
+  label: string
+  value: string
+}
 
 const MainControls = () => {
 
 	const [dropDownOpen, setDropDownOpen] = useState(false);
 	const [videoSources, setVideoSources] = useState<Electron.DesktopCapturerSource[] | null>(null);
+  const [videoSourceNames, setVideoSourceNames] = useState<IOptions[]>([]);
 	const [selectedVideoSource, setSelectedVideoSource] = useState('')
 
 	useEffect(() => {
-    getVideoSources()
-
-		if(selectedVideoSource) {
-        console.log('source selected', selectedVideoSource)
+    if (videoSources == null || videoSources.length < 1) {
+      getVideoSources();
     }
 
-	}, [selectedVideoSource]);
+	}, [videoSources]);
 
 	const getVideoSources = async () => {
 		const inputSources = await desktopCapturer.getSources({
       types: ['window', 'screen']
 		});
 
-		setVideoSources(inputSources);
+    setVideoSourceNames(inputSources.map(source => {
+      return {label: source.name, value: source.id}
+    }));
+
+    setVideoSources(inputSources);
+
 	}
 
 	const selectSource = (source: Electron.DesktopCapturerSource) => {
@@ -37,18 +47,7 @@ const MainControls = () => {
       <button type="button">Stop</button>
       <hr />
       <div>
-        {dropDownOpen ? (
-            <div>
-            <select onChange={e => setSelectedVideoSource(e.target.value)} name="videoSource" id="videoSource">
-              {videoSources && videoSources.map(source => {
-                <option key={source.id} value={source.name}>{source.name}</option>
-                })
-              }
-            </select>
-            </div>
-          ) : (
-            <button type="button" onClick={() => {setDropDownOpen(!dropDownOpen)}}>Choose video source</button> )
-        }
+       <Select options={videoSourceNames} />
       </div>
 		</div>
 	</>
