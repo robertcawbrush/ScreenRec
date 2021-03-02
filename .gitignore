@@ -50,3 +50,5 @@ npm-debug.log.*
 *.scss.d.ts
 
 .history/
+
+src/package.lock.json
