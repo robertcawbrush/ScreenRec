@@ -16,6 +16,6 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@types/core-js": "^2.5.4",
+    "@types/core-js": "^2.5.4"
   }
 }

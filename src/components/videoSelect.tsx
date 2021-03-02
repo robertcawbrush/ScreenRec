@@ -8,12 +8,14 @@ interface props {
 
 const VideoSelect = (props: props) => {
   const renderSourceOptions = () => {
+    let options = null;
     if (props.videoSources !== null) {
-      return props.videoSources.map((vs: Electron.DesktopCapturerSource) => {
-        // <option value={vs.id}>{vs.name}</option>;
-        <h1>Hello</h1>
+      options = props.videoSources.map((vs: Electron.DesktopCapturerSource) => {
+         return (<option value={vs.id}>{vs.name}</option>)
       });
     }
+
+    return options
   };
 
   return (
@@ -24,7 +26,7 @@ const VideoSelect = (props: props) => {
         onChange={props.selectSource}
       >
         {props.videoSources && renderSourceOptions()}
-      </select>{props.videoSources && renderSourceOptions()}
+      </select>
     </>
   );
 };
