@@ -11,7 +11,7 @@ const Main: React.VoidFunctionComponent = () => {
       <MainControls />
     </div>
   );
-}
+};
 
 export default function App() {
   return (

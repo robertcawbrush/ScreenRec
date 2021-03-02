@@ -1,57 +1,53 @@
-import React, { useEffect, useRef, useState} from 'react';
-import Select from 'react-select';
+import React, { useEffect, useRef, useState } from 'react';
 import { desktopCapturer } from 'electron';
-
-interface IOptions {
-  label: string
-  value: string
-}
+import VideoSelect from './videoSelect';
 
 const MainControls = () => {
+  const [videoSources, setVideoSources] = useState<
+    Electron.DesktopCapturerSource[] | null
+  >(null);
+  const [selectedVideoSource, setSelectedVideoSource] = useState('');
 
-	const [dropDownOpen, setDropDownOpen] = useState(false);
-	const [videoSources, setVideoSources] = useState<Electron.DesktopCapturerSource[] | null>(null);
-  const [videoSourceNames, setVideoSourceNames] = useState<IOptions[]>([]);
-	const [selectedVideoSource, setSelectedVideoSource] = useState('')
-
-	useEffect(() => {
+  useEffect(() => {
     if (videoSources == null || videoSources.length < 1) {
       getVideoSources();
     }
+  }, [videoSources]);
 
-	}, [videoSources]);
+  const getVideoSources = async () => {
+    const inputSources = await desktopCapturer.getSources({
+      types: ['window', 'screen'],
+    });
 
-	const getVideoSources = async () => {
-		const inputSources = await desktopCapturer.getSources({
-      types: ['window', 'screen']
-		});
-
-    setVideoSourceNames(inputSources.map(source => {
-      return {label: source.name, value: source.id}
-    }));
+    console.log('fetched input sources');
 
     setVideoSources(inputSources);
+  };
 
-	}
+  const selectSource = (event: any) => {
+    console.log('selected ' + event);
+    setSelectedVideoSource(event.target.value);
+    // event should have id then map over video sources for id and set
+  };
 
-	const selectSource = (source: Electron.DesktopCapturerSource) => {
-
-	}
-
-	return (
-	<>
-		<h1>controls</h1>
-		<div>
-      <h1>ScreenRec</h1>
-      <button type="button">Start</button>
-      <button type="button">Stop</button>
-      <hr />
+  return (
+    <>
+      <h1>controls</h1>
       <div>
-       <Select options={videoSourceNames} />
+        <h1>ScreenRec</h1>
+        <button type="button">Start</button>
+        <button type="button">Stop</button>
+        <hr />
+        <div>
+          <VideoSelect
+            selectSource={selectSource}
+            selectedVideoSource={selectedVideoSource}
+            videoSources={videoSources}
+          />
+        </div>
       </div>
-		</div>
-	</>
-	);
+    </>
+  );
 };
 
-	export default MainControls;
+export default MainControls;
