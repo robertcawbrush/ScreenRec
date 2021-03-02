@@ -3,7 +3,7 @@ import React from 'react';
 interface props {
   selectSource: (event: any) => void;
   videoSources: Electron.DesktopCapturerSource[] | null;
-  selectedVideoSource: string;
+  selectedVideoSourceId: string;
 }
 
 const VideoSelect = (props: props) => {
@@ -11,7 +11,7 @@ const VideoSelect = (props: props) => {
     let options = null;
     if (props.videoSources !== null) {
       options = props.videoSources.map((vs: Electron.DesktopCapturerSource) => {
-         return (<option value={vs.id}>{vs.name}</option>)
+         return (<option key={vs.id} value={vs.id}>{vs.name}</option>)
       });
     }
 
@@ -22,7 +22,7 @@ const VideoSelect = (props: props) => {
     <>
       <select
         name="selectVideoSource"
-        value={props.selectedVideoSource}
+        value={props.selectedVideoSourceId}
         onChange={props.selectSource}
       >
         {props.videoSources && renderSourceOptions()}

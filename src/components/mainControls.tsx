@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { desktopCapturer } from 'electron';
 import VideoSelect from './videoSelect';
 
+
 const MainControls = () => {
   const [videoSources, setVideoSources] = useState<
     Electron.DesktopCapturerSource[] | null
   >(null);
-  const [selectedVideoSource, setSelectedVideoSource] = useState('');
+  const [selectedVideoSourceId, setSelectedVideoSourceId] = useState('');
+
+  const videoSelectButton = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (videoSources == null || videoSources.length < 1) {
@@ -24,10 +27,26 @@ const MainControls = () => {
     setVideoSources(inputSources);
   };
 
-  const selectSource = (event: any) => {
+  const selectSource = async (event: any) => {
     console.log('selected ' + event);
-    setSelectedVideoSource(event.target.value);
+    setSelectedVideoSourceId(event.target.value);
+
     // event should have id then map over video sources for id and set
+    const source = videoSources?.find(a => a.id == event.target.value)
+    const constraints:any = {
+      audio: false,
+      video: {
+        mandatory: {
+          chromeMediaSource: source,
+          chromeMediaSourceId: selectedVideoSourceId
+        }
+      }
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+   
+    // videoElement.srcObject = stream;
+    // videoElement.play()
   };
 
   return (
@@ -35,13 +54,15 @@ const MainControls = () => {
       <h1>controls</h1>
       <div>
         <h1>ScreenRec</h1>
-        <button type="button">Start</button>
+        <button ref={videoSelectButton} type="button">
+          Start
+        </button>
         <button type="button">Stop</button>
         <hr />
         <div>
           <VideoSelect
             selectSource={selectSource}
-            selectedVideoSource={selectedVideoSource}
+            selectedVideoSourceId={selectedVideoSourceId}
             videoSources={videoSources}
           />
         </div>
